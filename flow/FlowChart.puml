@@ -1,0 +1,49 @@
+@startuml
+
+|User Actions|
+start
+:Start;
+
+partition "Admin Flow" {
+  :Login;
+  :Manage Users;
+  :Manage Categories;
+  :Approve or Reject Listings;
+  :View Analytics;
+  -->[Exit]
+}
+
+partition "Seller Flow" {
+  :Login;
+  :Create New Property Listing;
+  :Fill Property Details;
+  :Upload Property Photos;
+  :Submit Listing for Approval;
+  if (Admin Approval?) then (Yes)
+    :Listing Approved;
+    :Property is Live;
+  else (No)
+    :Listing Rejected;
+    :Edit Listing and Resubmit;
+  endif
+  :Manage Existing Listings;
+  :View Buyer Inquiries;
+  :Respond to Buyer Messages;
+  -->[Exit]
+}
+
+partition "Buyer Flow" {
+  :Login;
+  :Browse Properties;
+  :Filter/Search Properties;
+  :Select Property to View Details;
+  :Save Property to Wishlist;
+  :Contact Seller;
+  :Submit Inquiry;
+  :Receive Seller's Reply;
+  -->[Exit]
+}
+
+stop
+
+@enduml
