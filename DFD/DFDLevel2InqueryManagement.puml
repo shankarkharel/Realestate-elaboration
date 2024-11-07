@@ -1,0 +1,30 @@
+@startuml DFDLevel2InqueryManagement
+
+title Level 2 DFD: Inquiry and Offer Management
+
+actor Buyer
+actor Seller
+
+rectangle "Send Inquiry" as SendInquiry
+rectangle "Submit Offer" as SubmitOffer
+rectangle "Request Visit" as RequestVisit
+database "Inquiry and Offer Database" as InquiryOfferDB
+
+Buyer -down-> SendInquiry : Send Inquiry
+SendInquiry -down-> InquiryOfferDB : Store Inquiry Details
+InquiryOfferDB -right-> Seller : Notify of New Inquiry
+Seller -up-> SendInquiry : Respond to Inquiry
+SendInquiry -up-> Buyer : Send Inquiry Response
+
+Buyer -down-> SubmitOffer : Submit Offer
+SubmitOffer -down-> InquiryOfferDB : Store Offer Details
+InquiryOfferDB -right-> Seller : Notify of New Offer
+Seller -up-> SubmitOffer : Respond to Offer
+SubmitOffer -up-> Buyer : Send Offer Response
+
+Buyer -down-> RequestVisit : Request Visit
+RequestVisit -down-> InquiryOfferDB : Store Visit Request
+InquiryOfferDB -right-> Seller : Notify of Visit Request
+RequestVisit -up-> Buyer : Send Visit Confirmation
+
+@enduml

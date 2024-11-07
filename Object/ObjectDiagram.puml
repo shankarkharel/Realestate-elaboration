@@ -1,0 +1,84 @@
+@startuml RealEstateApplicationObjectDiagram
+title Object Diagram
+
+' Define instances for main classes
+object buyer1 {
+    id = "B001"
+    name = "Shankar Kharel"
+    email = "shankar@example.com"
+}
+
+object seller1 {
+    id = "S001"
+    name = "Ranjit "
+    email = "ranjit@example.com"
+}
+
+object admin1 {
+    id = "A001"
+    name = "Bivek "
+    email = "admin@example.com"
+}
+
+object property1 {
+    id = "P001"
+    address = "123 Main St, Springfield"
+    lat = "40.7128 N"
+    long = "74.0060 W"
+    price = 250000.00
+    for = "sell"
+    status = "available"
+    features = propertyFeatures1
+}
+
+object propertyFeatures1 {
+    environment = "Urban"
+    animalFriendly = true
+    privacy = "limited"
+    availabilityStatus = "vacant"
+    nearbyFacilities = ["School", "Hospital", "Supermarket"]
+    isNegotiable = true
+    parkingAvailability = {"Car": 2, "Bike": 5}
+    amenities = ["Pool", "Gym", "Playground"]
+}
+
+object inquiry1 {
+    id = "I001"
+    propertyId = "P001"
+    buyerId = "B001"
+    message = "Is this property still available?"
+    date = "2024-11-07"
+}
+
+object offer1 {
+    id = "O001"
+    propertyId = "P001"
+    buyerId = "B001"
+    offerAmount = 240000.00
+    status = "pending"
+}
+
+object visitRequest1 {
+    id = "V001"
+    propertyId = "P001"
+    buyerId = "B001"
+    sellerId = "S001"
+    date = "2024-11-10"
+}
+
+' Relationships
+buyer1 --> property1 : "views"
+buyer1 --> inquiry1 : "sends"
+buyer1 --> offer1 : "submits"
+buyer1 --> visitRequest1 : "requests"
+
+seller1 --> property1 : "lists"
+seller1 --> inquiry1 : "responds"
+seller1 --> offer1 : "responds"
+seller1 --> visitRequest1 : "confirms"
+
+admin1 --> property1 : "approves"
+
+property1 *-- propertyFeatures1 : "has features"
+
+@enduml

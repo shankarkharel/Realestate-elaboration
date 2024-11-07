@@ -1,0 +1,32 @@
+@startuml DFDLevel0
+
+title Level 0 DFD: Real Estate Application
+
+actor Buyer
+actor Seller
+actor Admin
+
+circle "Real Estate Application" as RealEstateApp
+
+Buyer -right-> RealEstateApp : View Listings
+Buyer -down-> RealEstateApp : Make Inquiry
+Buyer -left-> RealEstateApp : Request Visit
+Buyer -up-> RealEstateApp : Submit Offer
+
+RealEstateApp -right-> Buyer : Property Listings
+RealEstateApp -down-> Buyer : Inquiry Response
+RealEstateApp -left-> Buyer : Visit Confirmation
+RealEstateApp -up-> Buyer : Offer Response
+
+Seller -right-> RealEstateApp : List Property
+Seller -down-> RealEstateApp : Update Property
+Seller -left-> RealEstateApp : Delete Property
+
+RealEstateApp -right-> Seller : Inquiry Notifications
+RealEstateApp -down-> Seller : Offer Notifications
+RealEstateApp -left-> Seller : Listing Status Updates
+
+Admin -down-> RealEstateApp : Manage Users
+Admin -up-> RealEstateApp : Approve/Reject Listings
+
+@enduml

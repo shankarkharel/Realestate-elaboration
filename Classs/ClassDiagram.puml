@@ -1,0 +1,141 @@
+@startuml RealEstateApplicationClassDiagram
+
+title Class Diagram 
+
+' Define the main classes
+class Buyer {
+    +id: String
+    +name: String
+    +email: String
+    +register()
+    +login()
+    +viewListings()
+    +sendInquiry(inquiry: Inquiry)
+    +submitOffer(offer: Offer)
+    +requestVisit(property: Property)
+}
+
+class Seller {
+    +id: String
+    +name: String
+    +email: String
+    +register()
+    +login()
+    +listProperty(property: Property)
+    +updateProperty(propertyId: String)
+    +deleteProperty(propertyId: String)
+    +respondToInquiry(inquiry: Inquiry)
+    +respondToOffer(offer: Offer)
+}
+
+class Admin {
+    +id: String
+    +name: String
+    +email: String
+    +approveListing(propertyId: String)
+    +rejectListing(propertyId: String)
+    +manageUsers()
+    +updateListingStatus(propertyId: String, status: String)
+}
+
+class Property {
+    +id: String
+    +address: String
+    +lat: String
+    +long: String
+    +price: Double
+    +for: String (sell/rent)
+    +status: String
+    +features: PropertyFeatures
+    +addDetails()
+    +updateDetails()
+    +deleteDetails()
+    +getDetails()
+}
+
+class PropertyFeatures {
+    +environment: String
+    +animalFriendly: Boolean
+    +privacy: String (full/limited)
+    +availabilityStatus: String
+    +nearbyFacilities: List<String>
+    +isNegotiable: Boolean
+    +parkingAvailability: Map<String, Integer> ' vehicle types and counts
+    +amenities: List<String>
+}
+
+class Inquiry {
+    +id: String
+    +propertyId: String
+    +buyerId: String
+    +message: String
+    +date: Date
+    +submitInquiry()
+    +getResponse()
+}
+
+class Offer {
+    +id: String
+    +propertyId: String
+    +buyerId: String
+    +offerAmount: Double
+    +status: String
+    +submitOffer()
+    +getResponse()
+}
+
+class VisitRequest {
+    +id: String
+    +propertyId: String
+    +buyerId: String
+    +sellerId: String
+    +date: Date
+    +requestVisit()
+    +confirmVisit()
+}
+
+' Define databases as classes
+class PropertyDatabase {
+    +addProperty(property: Property)
+    +updateProperty(property: Property)
+    +deleteProperty(propertyId: String)
+    +getPropertyById(propertyId: String)
+}
+
+class UserDatabase {
+    +storeUser(user: User)
+    +getUserById(userId: String)
+    +updateUser(user: User)
+}
+
+class InquiryOfferDatabase {
+    +storeInquiry(inquiry: Inquiry)
+    +storeOffer(offer: Offer)
+    +getInquiriesByPropertyId(propertyId: String)
+    +getOffersByPropertyId(propertyId: String)
+}
+
+' Relationships
+Buyer -- PropertyDatabase : "view"
+Buyer -- InquiryOfferDatabase : "send inquiry"
+Buyer -- InquiryOfferDatabase : "submit offer"
+Buyer -- InquiryOfferDatabase : "request visit"
+
+Seller -- PropertyDatabase : "manage properties"
+Seller -- InquiryOfferDatabase : "respond to inquiries and offers"
+
+Admin -- PropertyDatabase : "approve/reject properties"
+Admin -- UserDatabase : "manage users"
+
+PropertyDatabase -- Property : "stores"
+UserDatabase -- Buyer : "stores"
+UserDatabase -- Seller : "stores"
+UserDatabase -- Admin : "stores"
+
+InquiryOfferDatabase -- Inquiry : "stores"
+InquiryOfferDatabase -- Offer : "stores"
+InquiryOfferDatabase -- VisitRequest : "stores"
+
+Property "1" -- "1" PropertyFeatures : "has"
+
+@enduml
