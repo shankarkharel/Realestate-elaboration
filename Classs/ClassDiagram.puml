@@ -13,6 +13,8 @@ class Buyer {
     +sendInquiry(inquiry: Inquiry)
     +submitOffer(offer: Offer)
     +requestVisit(property: Property)
+    +sendMessage(channelId: String, message: Message)
+    +viewMessages(channelId: String)
 }
 
 class Seller {
@@ -26,6 +28,8 @@ class Seller {
     +deleteProperty(propertyId: String)
     +respondToInquiry(inquiry: Inquiry)
     +respondToOffer(offer: Offer)
+    +viewChannelMessages(channelId: String)
+    +sendMessage(channelId: String, message: Message)
 }
 
 class Admin {
@@ -94,6 +98,25 @@ class VisitRequest {
     +confirmVisit()
 }
 
+class ChatChannel {
+    +id: String
+    +propertyId: String
+    +sellerId: String
+    +buyerId: String
+    +createChannel(property: Property, seller: Seller, buyer: Buyer)
+    +getMessages()
+}
+
+class Message {
+    +id: String
+    +senderId: String
+    +channelId: String
+    +content: String
+    +timestamp: DateTime
+    +sendMessage()
+    +receiveMessage()
+}
+
 ' Define databases as classes
 class PropertyDatabase {
     +addProperty(property: Property)
@@ -115,14 +138,28 @@ class InquiryOfferDatabase {
     +getOffersByPropertyId(propertyId: String)
 }
 
+class MessagingDatabase {
+    +storeMessage(message: Message)
+    +getMessagesByChannel(channelId: String)
+}
+
+class ChatChannelDatabase {
+    +storeChannel(channel: ChatChannel)
+    +getChannelByPropertyAndBuyer(propertyId: String, buyerId: String)
+}
+
 ' Relationships
 Buyer -- PropertyDatabase : "view"
 Buyer -- InquiryOfferDatabase : "send inquiry"
 Buyer -- InquiryOfferDatabase : "submit offer"
 Buyer -- InquiryOfferDatabase : "request visit"
+Buyer -- ChatChannelDatabase : "access chat channels"
+Buyer -- MessagingDatabase : "send/view messages"
 
 Seller -- PropertyDatabase : "manage properties"
 Seller -- InquiryOfferDatabase : "respond to inquiries and offers"
+Seller -- ChatChannelDatabase : "manage chat channels"
+Seller -- MessagingDatabase : "send/view messages"
 
 Admin -- PropertyDatabase : "approve/reject properties"
 Admin -- UserDatabase : "manage users"
@@ -137,5 +174,10 @@ InquiryOfferDatabase -- Offer : "stores"
 InquiryOfferDatabase -- VisitRequest : "stores"
 
 Property "1" -- "1" PropertyFeatures : "has"
+Message -- ChatChannel : "belongs to"
+ChatChannel -- Property : "related to"
+ChatChannelDatabase -- ChatChannel : "stores"
+ChatChannel "1" -- "1" Seller : "with"
+ChatChannel "1" -- "1" Buyer : "with"
 
 @enduml

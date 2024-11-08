@@ -1,5 +1,6 @@
 @startuml RealEstateApplicationObjectDiagram
-title Object Diagram
+title Object Diagram 
+
 
 ' Define instances for main classes
 object buyer1 {
@@ -10,13 +11,13 @@ object buyer1 {
 
 object seller1 {
     id = "S001"
-    name = "Ranjit "
+    name = "Ranjit"
     email = "ranjit@example.com"
 }
 
 object admin1 {
     id = "A001"
-    name = "Bivek "
+    name = "Bivek"
     email = "admin@example.com"
 }
 
@@ -26,7 +27,7 @@ object property1 {
     lat = "40.7128 N"
     long = "74.0060 W"
     price = 250000.00
-    for = "sell"
+    for = "sell" 'sell/rent
     status = "available"
     features = propertyFeatures1
 }
@@ -66,19 +67,50 @@ object visitRequest1 {
     date = "2024-11-10"
 }
 
+object chatChannel1 {
+    id = "C001"
+    propertyId = "P001"
+    sellerId = "S001"
+    buyerId = "B001"
+}
+
+object message1 {
+    id = "M001"
+    senderId = "B001"
+    channelId = "C001"
+    content = "Hello, I'm interested in this property."
+    timestamp = "2024-11-07 10:15"
+}
+
+object message2 {
+    id = "M002"
+    senderId = "S001"
+    channelId = "C001"
+    content = "Hi Shankar, yes the property is still available."
+    timestamp = "2024-11-07 10:20"
+}
+
 ' Relationships
 buyer1 --> property1 : "views"
 buyer1 --> inquiry1 : "sends"
 buyer1 --> offer1 : "submits"
 buyer1 --> visitRequest1 : "requests"
+buyer1 --> chatChannel1 : "has chat channel"
+buyer1 --> message1 : "sends message"
+buyer1 --> message2 : "receives message"
 
 seller1 --> property1 : "lists"
 seller1 --> inquiry1 : "responds"
 seller1 --> offer1 : "responds"
 seller1 --> visitRequest1 : "confirms"
+seller1 --> chatChannel1 : "has chat channel"
+seller1 --> message1 : "receives message"
+seller1 --> message2 : "sends message"
 
 admin1 --> property1 : "approves"
 
 property1 *-- propertyFeatures1 : "has features"
+chatChannel1 *-- message1 : "contains"
+chatChannel1 *-- message2 : "contains"
 
 @enduml
