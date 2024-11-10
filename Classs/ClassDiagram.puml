@@ -1,32 +1,55 @@
-@startuml RealEstateApplicationClassDiagram
+@startuml Classes
 
 title Class Diagram 
 
 ' Define the main classes
 class User {
     +id: String
-    +name: String
+    +fullName: String
     +email: String
     +phone: String
+    +profileImage: String
+    +secondaryPhone: String
+    +gender:Gender
+    +dateOfBirth: Date   
+    +addressInformation: AddressInformation
+    +website:String
+    +occupation:String
     +register()
     +login()
     +viewListings()
     +CreateProperty(offer: Offer)
     +sendMessage(channelId: String, message: Message)
     +viewMessages(channelId: String)
+    +setPreferences(appPreferences: AppPrefernces),
+}
+
+class AppPrefernces{
+    +purposeOfApp: AppPurposes
+    +numberOfPeopleLiving: int
+    +getAppPreferences(userId:ID)
+}
+
+enum AppPurposes{
+    land,
+    house,
+    flat,
+    Apartment,
+}
+class AddressInformation{
+    +currentAddress: String,
+    +city: String,
+    +sprovince: String,
+    +postalCoad:String
+}
+
+enum Gender{
+    Male,
+    Female,
+    Others,
 }
 
 
-
-' class Admin {
-'     +id: String
-'     +name: String
-'     +email: String
-'     +approveListing(propertyId: String)
-'     +rejectListing(propertyId: String)
-'     +manageUsers()
-'     +updateListingStatus(propertyId: String, status: String)
-' }
 
 class Property {
     +id: String
@@ -34,27 +57,74 @@ class Property {
     +lat: String
     +long: String
     +price: Double
-    +type: String '
+    +CreatersPrivacy: String (full/limited/custom)
     ' +for: String (sell/rent)
     +status: String
+    +publishStatus: bool 'true for published false if in draft
     +features: PropertyFeatures
     +addDetails()
-    +updateDetails()
+    +updateDetails()  
     +deleteDetails()
     +getDetails()
+    +saveAsDraft()
+    +publish()
+    +chatWithPoster()
+    
 }
 
 class PropertyFeatures {
-    +environment: String
-    +animalFriendly: Boolean
-    +privacy: String (full/limited)
+    +environment: Environment
+    +petPolicy: Boolean 'pets allowed :true, pets not allowed: false
+    +fLoorLevel: int '0,1,2,3...
+     + NunberOFRooms:int
+     + NunberOFKitchen:int
+     +NumberOFBathroom:int 
+     +NumberOfHall:int 
     +availabilityStatus: String
-    +nearbyFacilities: List<String>
-    +Property Type: String 'Flats/Apartments/Homes/Villas/Shutter/Rooms
+    +nearbyFacilities: PropertyType
+    +propertyType: PropertyType
     +isNegotiable: Boolean
-    +parkingAvailability: Map<String, Integer> ' vehicle types and counts
-    +amenities: List<String>
+    +parkingAvailability: ParkingAvailability
+    +amenities: Amenities
+    +listingDuration: int 'Days
     
+}
+
+enum ParkingAvailability{
+    1 Car,
+    2 Car,
+    3+ Cars,
+}
+
+
+
+enum Environment{
+kidFriendly,
+Balcony,
+Gardens,
+Other
+}
+
+enum NearByFacilities{
+     Parks,
+    Hospitals,
+    Schools,
+    Department Stores,
+    Futsal,
+    Swimming Pool,
+    Gym,
+
+}
+enum BuildingFacilities{
+   park,
+    Gym,
+    Futsal,
+    Swimming Pool,
+    Pet Friendly,
+    Balcony,
+    Parking,
+    Furnished,
+    Semi-furnished,
 }
 
 enum PropertyType{
@@ -63,38 +133,9 @@ enum PropertyType{
     Homes,
     Villas,
     Shutter,
-    Rooms
+    Rooms,
 }
 
-class Inquiry {
-    +id: String
-    +propertyId: String
-    +buyerId: String
-    +message: String
-    +date: Date
-    +submitInquiry()
-    +getResponse()
-}
-
-class Offer {
-    +id: String
-    +propertyId: String
-    +buyerId: String
-    +offerAmount: Double
-    +status: String
-    +submitOffer()
-    +getResponse()
-}
-
-class VisitRequest {
-    +id: String
-    +propertyId: String
-    +buyerId: String
-    +sellerId: String
-    +date: Date
-    +requestVisit()
-    +confirmVisit()
-}
 
 class ChatChannel {
     +id: String
@@ -118,6 +159,7 @@ class Message {
 ' Define databases as classes
 class PropertyDatabase {
     +addProperty(property: Property)
+    +updatePropertyPublishStatus(property: Property)
     +updateProperty(property: Property)
     +deleteProperty(propertyId: String)
     +getPropertyById(propertyId: String)
@@ -129,12 +171,7 @@ class UserDatabase {
     +updateUser(user: User)
 }
 
-class InquiryOfferDatabase {
-    +storeInquiry(inquiry: Inquiry)
-    +storeOffer(offer: Offer)
-    +getInquiriesByPropertyId(propertyId: String)
-    +getOffersByPropertyId(propertyId: String)
-}
+
 
 class MessagingDatabase {
     +storeMessage(message: Message)
@@ -147,35 +184,29 @@ class ChatChannelDatabase {
 }
 
 ' Relationships
-Buyer -- PropertyDatabase : "view"
-Buyer -- InquiryOfferDatabase : "send inquiry"
-Buyer -- InquiryOfferDatabase : "submit offer"
-Buyer -- InquiryOfferDatabase : "request visit"
-Buyer -- ChatChannelDatabase : "access chat channels"
-Buyer -- MessagingDatabase : "send/view messages"
+User -- PropertyDatabase : "view"
+' User -- InquiryOfferDatabase : "send inquiry"
+' User -- InquiryOfferDatabase : "submit offer"
+' USer -- InquiryOfferDatabase : "request visit"
+User -- ChatChannelDatabase : "access chat channels"
+User -- AddressInformation : "has"
 
-Seller -- PropertyDatabase : "manage properties"
-Seller -- InquiryOfferDatabase : "respond to inquiries and offers"
-Seller -- ChatChannelDatabase : "manage chat channels"
-Seller -- MessagingDatabase : "send/view messages"
+User -- PropertyDatabase : "manage properties"
 
-Admin -- PropertyDatabase : "approve/reject properties"
-Admin -- UserDatabase : "manage users"
+User -- ChatChannelDatabase : "manage chat channels"
+User -- MessagingDatabase : "send/view messages"
+
+
 
 PropertyDatabase -- Property : "stores"
-UserDatabase -- Buyer : "stores"
-UserDatabase -- Seller : "stores"
-UserDatabase -- Admin : "stores"
+UserDatabase -- User : "stores"
 
-InquiryOfferDatabase -- Inquiry : "stores"
-InquiryOfferDatabase -- Offer : "stores"
-InquiryOfferDatabase -- VisitRequest : "stores"
 
 Property "1" -- "1" PropertyFeatures : "has"
 Message -- ChatChannel : "belongs to"
 ChatChannel -- Property : "related to"
 ChatChannelDatabase -- ChatChannel : "stores"
-ChatChannel "1" -- "1" Seller : "with"
-ChatChannel "1" -- "1" Buyer : "with"
+ChatChannel "1" -- "1" User : "with"
+ChatChannel "1" -- "1" User : "with"
 
 @enduml
