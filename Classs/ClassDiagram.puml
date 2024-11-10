@@ -1,6 +1,6 @@
 @startuml Classes
 
-title Class Diagram 
+title Class 
 
 ' Define the main classes
 class User {
@@ -8,6 +8,7 @@ class User {
     +fullName: String
     +email: String
     +phone: String
+    +password:String
     +profileImage: String
     +secondaryPhone: String
     +gender:Gender
@@ -15,19 +16,24 @@ class User {
     +addressInformation: AddressInformation
     +website:String
     +occupation:String
+    +preferences: AppPrefernces
     +register()
     +login()
+    +forgetPassword()
+    +resetPassword()
     +viewListings()
+    +verifyOTP()
     +CreateProperty(offer: Offer)
     +sendMessage(channelId: String, message: Message)
     +viewMessages(channelId: String)
-    +setPreferences(appPreferences: AppPrefernces),
+    
 }
 
 class AppPrefernces{
     +purposeOfApp: AppPurposes
     +numberOfPeopleLiving: int
     +getAppPreferences(userId:ID)
+    
 }
 
 enum AppPurposes{
@@ -185,9 +191,7 @@ class ChatChannelDatabase {
 
 ' Relationships
 User -- PropertyDatabase : "view"
-' User -- InquiryOfferDatabase : "send inquiry"
-' User -- InquiryOfferDatabase : "submit offer"
-' USer -- InquiryOfferDatabase : "request visit"
+
 User -- ChatChannelDatabase : "access chat channels"
 User -- AddressInformation : "has"
 
