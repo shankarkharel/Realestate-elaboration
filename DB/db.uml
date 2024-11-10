@@ -1,0 +1,102 @@
+Table buyers {
+    buyer_id UUID [pk, default: "gen_random_uuid()", note: "Primary key"]
+    name VARCHAR(100) [not null]
+    email VARCHAR(100) [not null, unique]
+    phone VARCHAR(15)
+}
+
+Table sellers {
+    seller_id UUID [pk, default: "gen_random_uuid()", note: "Primary key"]
+    name VARCHAR(100) [not null]
+    email VARCHAR(100) [not null, unique]
+    phone VARCHAR(15)
+}
+
+Table admins {
+    admin_id UUID [pk, default: "gen_random_uuid()", note: "Primary key"]
+    name VARCHAR(100) [not null]
+    email VARCHAR(100) [not null, unique]
+}
+
+Table properties {
+    property_id UUID [pk, default: "gen_random_uuid()", note: "Primary key"]
+    address TEXT [not null]
+    price DECIMAL(15, 2) [not null]
+    status VARCHAR(50) [not null]
+    seller_id UUID [not null, ref: > sellers.seller_id]
+}
+
+Table inquiries {
+    inquiry_id UUID [pk, default: "gen_random_uuid()", note: "Primary key"]
+    property_id UUID [not null, ref: > properties.property_id]
+    buyer_id UUID [not null, ref: > buyers.buyer_id]
+    message TEXT [not null]
+    date DATE [not null]
+    status VARCHAR(50) [default: "open"]
+}
+
+Table offers {
+    offer_id UUID [pk, default: "gen_random_uuid()", note: "Primary key"]
+    property_id UUID [not null, ref: > properties.property_id]
+    buyer_id UUID [not null, ref: > buyers.buyer_id]
+    offer_amount DECIMAL(15, 2) [not null]
+    status VARCHAR(50) [default: "pending"]
+    date DATE [not null]
+}
+
+Table visit_requests {
+    visit_id UUID [pk, default: "gen_random_uuid()", note: "Primary key"]
+    property_id UUID [not null, ref: > properties.property_id]
+    buyer_id UUID [not null, ref: > buyers.buyer_id]
+    seller_id UUID [not null, ref: > sellers.seller_id]
+    date DATE [not null]
+    status VARCHAR(50) [default: "pending"]
+}
+
+Table chat_channels {
+    channel_id UUID [pk, default: "gen_random_uuid()", note: "Primary key"]
+    property_id UUID [not null, ref: > properties.property_id]
+    buyer_id UUID [not null, ref: > buyers.buyer_id]
+    seller_id UUID [not null, ref: > sellers.seller_id]
+    creation_date TIMESTAMP [default: "CURRENT_TIMESTAMP"]
+}
+
+Table messages {
+    message_id UUID [pk, default: "gen_random_uuid()", note: "Primary key"]
+    channel_id UUID [not null, ref: > chat_channels.channel_id]
+    sender_id UUID [not null]
+    receiver_id UUID [not null]
+    content TEXT [not null]
+    timestamp TIMESTAMP [default: "CURRENT_TIMESTAMP"]
+}
+
+Table property_details {
+    details_id UUID [pk, default: "gen_random_uuid()", note: "Primary key"]
+    property_id UUID [not null, unique, ref: > properties.property_id]
+    area INT
+    num_bedrooms INT
+    num_bathrooms INT
+    description TEXT
+    amenities TEXT
+}
+
+Table search_history {
+    search_id UUID [pk, default: "gen_random_uuid()", note: "Primary key"]
+    buyer_id UUID [not null, ref: > buyers.buyer_id]
+    search_terms TEXT
+    filters JSONB
+    timestamp TIMESTAMP [default: "CURRENT_TIMESTAMP"]
+}
+
+Table filter_criteria {
+    filter_id UUID [pk, default: "gen_random_uuid()", note: "Primary key"]
+    price_range VARCHAR(50)
+    location VARCHAR(100)
+    num_bedrooms INT
+    num_bathrooms INT
+    amenities TEXT
+}
+
+
+
+Ref: "sellers"."name" < "sellers"."seller_id"
