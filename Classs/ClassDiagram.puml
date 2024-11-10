@@ -3,44 +3,30 @@
 title Class Diagram 
 
 ' Define the main classes
-class Buyer {
+class User {
     +id: String
     +name: String
     +email: String
+    +phone: String
     +register()
     +login()
     +viewListings()
-    +sendInquiry(inquiry: Inquiry)
-    +submitOffer(offer: Offer)
-    +requestVisit(property: Property)
+    +CreateProperty(offer: Offer)
     +sendMessage(channelId: String, message: Message)
     +viewMessages(channelId: String)
 }
 
-class Seller {
-    +id: String
-    +name: String
-    +email: String
-    +register()
-    +login()
-    +listProperty(property: Property)
-    +updateProperty(propertyId: String)
-    +deleteProperty(propertyId: String)
-    +respondToInquiry(inquiry: Inquiry)
-    +respondToOffer(offer: Offer)
-    +viewChannelMessages(channelId: String)
-    +sendMessage(channelId: String, message: Message)
-}
 
-class Admin {
-    +id: String
-    +name: String
-    +email: String
-    +approveListing(propertyId: String)
-    +rejectListing(propertyId: String)
-    +manageUsers()
-    +updateListingStatus(propertyId: String, status: String)
-}
+
+' class Admin {
+'     +id: String
+'     +name: String
+'     +email: String
+'     +approveListing(propertyId: String)
+'     +rejectListing(propertyId: String)
+'     +manageUsers()
+'     +updateListingStatus(propertyId: String, status: String)
+' }
 
 class Property {
     +id: String
@@ -48,7 +34,8 @@ class Property {
     +lat: String
     +long: String
     +price: Double
-    +for: String (sell/rent)
+    +type: String '
+    ' +for: String (sell/rent)
     +status: String
     +features: PropertyFeatures
     +addDetails()
@@ -63,9 +50,20 @@ class PropertyFeatures {
     +privacy: String (full/limited)
     +availabilityStatus: String
     +nearbyFacilities: List<String>
+    +Property Type: String 'Flats/Apartments/Homes/Villas/Shutter/Rooms
     +isNegotiable: Boolean
     +parkingAvailability: Map<String, Integer> ' vehicle types and counts
     +amenities: List<String>
+    
+}
+
+enum PropertyType{
+    Flats,
+    Apartments,
+    Homes,
+    Villas,
+    Shutter,
+    Rooms
 }
 
 class Inquiry {
