@@ -1,6 +1,6 @@
 @startuml Classes
 
-title Class 
+title Class Diagram
 
 ' Define the main classes
 class User {
@@ -8,148 +8,196 @@ class User {
     +fullName: String
     +email: String
     +phone: String
-    +password:String
+    +password: String
     +profileImage: String
     +secondaryPhone: String
-    +gender:Gender
-    +dateOfBirth: Date   
+    +gender: Gender
+    +dateOfBirth: Date
     +addressInformation: AddressInformation
-    +website:String
-    +occupation:String
-    +preferences: AppPrefernces
+    +website: String
+    +occupation: String
+    +preferences: AppPreferences
     +register()
     +login()
     +forgetPassword()
     +resetPassword()
     +viewListings()
     +verifyOTP()
-    +CreateProperty(offer: Offer)
-    +sendMessage(channelId: String, message: Message)
-    +viewMessages(channelId: String)
-    
+    +createProperty(property: Property)
+    +openChatChannel(channelId: String)
 }
 
-class AppPrefernces{
-    +purposeOfApp: AppPurposes
+class AppPreferences {
+    +purposeOfApp: AppPurpose
     +numberOfPeopleLiving: int
-    +getAppPreferences(userId:ID)
-    
+    +getAppPreferences(userId: String)
 }
 
-enum AppPurposes{
-    land,
-    house,
-    flat,
-    Apartment,
-}
-class AddressInformation{
-    +currentAddress: String,
-    +city: String,
-    +sprovince: String,
-    +postalCoad:String
+enum AppPurpose {
+    LAND,
+    HOUSE,
+    FLAT,
+    APARTMENT
 }
 
-enum Gender{
-    Male,
-    Female,
-    Others,
+class AddressInformation {
+    +currentAddress: String
+    +city: String
+    +province: String
+    +postalCode: String
 }
 
-
+enum Gender {
+    MALE,
+    FEMALE,
+    OTHERS
+}
 
 class Property {
     +id: String
     +address: String
-    +lat: String
-    +long: String
+    +latitude: String
+    +longitude: String
     +price: Double
-    +CreatersPrivacy: String (full/limited/custom)
-    ' +for: String (sell/rent)
+    +isFav: Boolean
+    +creatorPrivacy: String 'full/limited/custom
+    +purpose: PropertyPurpose
     +status: String
-    +publishStatus: bool 'true for published false if in draft
+    +publishStatus: Boolean 'true for published, false for draft
     +features: PropertyFeatures
     +addDetails()
-    +updateDetails()  
+    +updateDetails()
     +deleteDetails()
     +getDetails()
     +saveAsDraft()
     +publish()
+    +addToFavorites()
+    +removeFromFavorites()
     +chatWithPoster()
-    
+    +shareProperty()
+}
+
+enum PropertyPurpose {
+    RENT
 }
 
 class PropertyFeatures {
     +environment: Environment
-    +petPolicy: Boolean 'pets allowed :true, pets not allowed: false
-    +fLoorLevel: int '0,1,2,3...
-     + NunberOFRooms:int
-     + NunberOFKitchen:int
-     +NumberOFBathroom:int 
-     +NumberOfHall:int 
-    +availabilityStatus: String
-    +nearbyFacilities: PropertyType
+    +petPolicy: Boolean 'true if pets allowed, false if not
+    +floorLevel: int
+    +numberOfRooms: int
+    +numberOfKitchens: int
+    +numberOfBathrooms: int
+    +facingDirection:String 'North South ...
+    +numberOfHalls: int
+    +roadWidth: Double
+    +condition: String 'new,old,needs mantainance
+    +propertyAge: PropertyAge   
+    +availabilityStatus: AvailabilityStatus
+    +nearbyFacilities: List<NearbyFacility>
     +propertyType: PropertyType
     +isNegotiable: Boolean
     +parkingAvailability: ParkingAvailability
-    +amenities: Amenities
-    +listingDuration: int 'Days
-    
+    +amenities: List<Amenity>
+    +listingDuration: int 'in days
 }
 
-enum ParkingAvailability{
-    1 Car,
-    2 Car,
-    3+ Cars,
-}
-
-
-
-enum Environment{
-kidFriendly,
-Balcony,
-Gardens,
-Other
-}
-
-enum NearByFacilities{
-     Parks,
-    Hospitals,
-    Schools,
-    Department Stores,
-    Futsal,
-    Swimming Pool,
-    Gym,
+enum PropertyAge{
+    NEW,
+    TWO_YEARS,
+    THREE_PLUS_YEARS
 
 }
-enum BuildingFacilities{
-   park,
-    Gym,
-    Futsal,
-    Swimming Pool,
-    Pet Friendly,
-    Balcony,
-    Parking,
-    Furnished,
-    Semi-furnished,
+
+enum ParkingAvailability {
+    ONE_CAR,
+    TWO_CARS,
+    THREE_PLUS_CARS
 }
 
-enum PropertyType{
-    Flats,
-    Apartments,
-    Homes,
-    Villas,
-    Shutter,
-    Rooms,
+enum Environment {
+    KID_FRIENDLY,
+    BALCONY,
+    GARDEN,
+    OTHER
 }
 
+enum NearbyFacility {
+    PARK,
+    HOSPITAL,
+    SCHOOL,
+    DEPARTMENT_STORE,
+    FUTSAL,
+    SWIMMING_POOL,
+    GYM
+}
+
+enum Amenity {
+    PARK,
+    GYM,
+    FUTSAL,
+    SWIMMING_POOL,
+    PET_FRIENDLY,
+    BALCONY,
+    PARKING,
+    FURNISHED,
+    SEMI_FURNISHED
+}
+
+enum PropertyType {
+    FLAT,
+    APARTMENT,
+    HOME,
+    VILLA,
+    SHOP,
+    ROOM
+}
+
+enum AvailabilityStatus {
+    AVAILABLE,
+    NOT_AVAILABLE
+}
+
+class Notification {
+    +title: String
+    +body: String
+    +notifiedAt: DateTime
+}
+
+class NotificationSettings {
+    +turnOff()
+    +turnOn()
+    +mute()
+}
+
+class LocationSettings {
+    +addNewAddress()
+    +updateCurrentLocation()
+}
+
+class LanguageSettings {
+    +setDefaultLanguage()
+}
 
 class ChatChannel {
     +id: String
     +propertyId: String
     +sellerId: String
     +buyerId: String
-    +createChannel(property: Property, seller: Seller, buyer: Buyer)
-    +getMessages()
+    +createChannel(property: Property, seller: User, buyer: User)
+    +getTextMessages()
+    +requestPropertyPictures()
+    +sendVoiceMessage()
+    +sendPictures()
+    +sendAttachments()
+    +copyOfferLink()
+    +saveContact()
+    +shareMyNumber()
+    +viewChatMembers()
+    +muteNotifications()
+    +editConversation()
+    +reportSeller()
+    +discloseMyNumberForFutureReference()
 }
 
 class Message {
@@ -165,7 +213,7 @@ class Message {
 ' Define databases as classes
 class PropertyDatabase {
     +addProperty(property: Property)
-    +updatePropertyPublishStatus(property: Property)
+    +updatePropertyPublishStatus(propertyId: String, status: Boolean)
     +updateProperty(property: Property)
     +deleteProperty(propertyId: String)
     +getPropertyById(propertyId: String)
@@ -176,8 +224,6 @@ class UserDatabase {
     +getUserById(userId: String)
     +updateUser(user: User)
 }
-
-
 
 class MessagingDatabase {
     +storeMessage(message: Message)
@@ -190,27 +236,24 @@ class ChatChannelDatabase {
 }
 
 ' Relationships
-User -- PropertyDatabase : "view"
-
-User -- ChatChannelDatabase : "access chat channels"
-User -- AddressInformation : "has"
-
-User -- PropertyDatabase : "manage properties"
-
-User -- ChatChannelDatabase : "manage chat channels"
-User -- MessagingDatabase : "send/view messages"
-
-
-
-PropertyDatabase -- Property : "stores"
-UserDatabase -- User : "stores"
+User --> AddressInformation : "has 1"
+User --> PropertyDatabase : "manages properties"
+User --> ChatChannelDatabase : "manages chat channels"
+User --> MessagingDatabase : "sends/views messages"
+User --> Notification : "receives"
+User --> NotificationSettings : "manages notifications"
+User --> LocationSettings : "manages location"
+User --> LanguageSettings : "sets language preference"
+MessagingDatabase --> Message : "stores"
 
 
-Property "1" -- "1" PropertyFeatures : "has"
-Message -- ChatChannel : "belongs to"
-ChatChannel -- Property : "related to"
-ChatChannelDatabase -- ChatChannel : "stores"
-ChatChannel "1" -- "1" User : "with"
-ChatChannel "1" -- "1" User : "with"
+
+PropertyDatabase --> Property : "stores"
+Property --> PropertyFeatures : "has 1"
+
+
+Message --> ChatChannel : "belongs to"
+ChatChannel --> Property : "related to"
+ChatChannelDatabase --> ChatChannel : "stores"
 
 @enduml

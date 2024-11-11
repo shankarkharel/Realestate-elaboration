@@ -1,116 +1,97 @@
-@startuml RealEstateApplicationObjectDiagram
-title Object Diagram 
+@startuml
 
+title Object Diagram - User and Property Interaction
 
-' Define instances for main classes
-object buyer1 {
-    id = "B001"
-    name = "Shankar Kharel"
-    email = "shankar@example.com"
+' Sample User Object
+object user1 {
+    id = "U001"
+    fullName = "John Doe"
+    email = "johndoe@example.com"
+    phone = "+123456789"
+    profileImage = "profile.jpg"
+    secondaryPhone = "+987654321"
+    gender = MALE
+    dateOfBirth = 1990-01-01
+    website = "www.johndoe.com"
+    occupation = "Software Engineer"
 }
 
-object seller1 {
-    id = "S001"
-    name = "Ranjit"
-    email = "ranjit@example.com"
+' Sample AddressInformation Object for the User
+object address1 {
+    currentAddress = "123 Main St"
+    city = "New York"
+    province = "NY"
+    postalCode = "10001"
 }
 
-object admin1 {
-    id = "A001"
-    name = "Bivek"
-    email = "admin@example.com"
+' Sample AppPreferences Object for the User
+object preferences1 {
+    purposeOfApp = HOUSE
+    numberOfPeopleLiving = 4
 }
 
+' Sample Property Object
 object property1 {
     id = "P001"
-    address = "123 Main St, Springfield"
-    lat = "40.7128 N"
-    long = "74.0060 W"
-    price = 250000.00
-    for = "sell" 'sell/rent
-    status = "available"
-    features = propertyFeatures1
+    address = "456 Park Ave"
+    latitude = "40.7128 N"
+    longitude = "74.0060 W"
+    price = 350000.00
+    isFav = false
+    creatorPrivacy = "full"
+    purpose = SELL
+    status = "Available"
+    publishStatus = true
 }
 
-object propertyFeatures1 {
-    environment = "Urban"
-    animalFriendly = true
-    privacy = "limited"
-    availabilityStatus = "vacant"
-    nearbyFacilities = ["School", "Hospital", "Supermarket"]
+' Sample PropertyFeatures Object for the Property
+object features1 {
+    environment = "Garden"
+    petPolicy = true
+    floorLevel = 2
+    numberOfRooms = 3
+    numberOfKitchens = 1
+    numberOfBathrooms = 2
+    numberOfHalls = 1
+    availabilityStatus = AVAILABLE
+    propertyType = HOME
     isNegotiable = true
-    parkingAvailability = {"Car": 2, "Bike": 5}
-    amenities = ["Pool", "Gym", "Playground"]
+    parkingAvailability = TWO_CARS
+    listingDuration = 30
 }
 
-object inquiry1 {
-    id = "I001"
-    propertyId = "P001"
-    buyerId = "B001"
-    message = "Is this property still available?"
-    date = "2024-11-07"
-}
-
-object offer1 {
-    id = "O001"
-    propertyId = "P001"
-    buyerId = "B001"
-    offerAmount = 240000.00
-    status = "pending"
-}
-
-object visitRequest1 {
-    id = "V001"
-    propertyId = "P001"
-    buyerId = "B001"
-    sellerId = "S001"
-    date = "2024-11-10"
-}
-
+' Sample ChatChannel Object
 object chatChannel1 {
     id = "C001"
     propertyId = "P001"
-    sellerId = "S001"
-    buyerId = "B001"
+    sellerId = "U001"
+    buyerId = "U002"
 }
 
+' Sample Message Objects in ChatChannel
 object message1 {
     id = "M001"
-    senderId = "B001"
+    senderId = "U001"
     channelId = "C001"
-    content = "Hello, I'm interested in this property."
-    timestamp = "2024-11-07 10:15"
+    content = "Hello, is the property still available?"
+    timestamp = 2024-11-10 10:00:00
 }
 
 object message2 {
     id = "M002"
-    senderId = "S001"
+    senderId = "U002"
     channelId = "C001"
-    content = "Hi Shankar, yes the property is still available."
-    timestamp = "2024-11-07 10:20"
+    content = "Yes, it is! Feel free to ask any questions."
+    timestamp = 2024-11-10 10:05:00
 }
 
 ' Relationships
-buyer1 --> property1 : "views"
-buyer1 --> inquiry1 : "sends"
-buyer1 --> offer1 : "submits"
-buyer1 --> visitRequest1 : "requests"
-buyer1 --> chatChannel1 : "has chat channel"
-buyer1 --> message1 : "sends message"
-buyer1 --> message2 : "receives message"
-
-seller1 --> property1 : "lists"
-seller1 --> inquiry1 : "responds"
-seller1 --> offer1 : "responds"
-seller1 --> visitRequest1 : "confirms"
-seller1 --> chatChannel1 : "has chat channel"
-seller1 --> message1 : "receives message"
-seller1 --> message2 : "sends message"
-
-admin1 --> property1 : "approves"
-
-property1 *-- propertyFeatures1 : "has features"
-chatChannel1 *-- message1 : "contains"
-chatChannel1 *-- message2 : "contains"
+user1 --> address1 : "has Address"
+user1 --> preferences1 : "has Preferences"
+user1 --> property1 : "owns Property"
+property1 --> features1 : "has Features"
+user1 --> chatChannel1 : "participates in Chat"
+chatChannel1 --> message1 : "contains Message"
+chatChannel1 --> message2 : "contains Message"
 
 @enduml
