@@ -1,97 +1,130 @@
-@startuml
-
-title Object Diagram - User and Property Interaction
-
-' Sample User Object
-object user1 {
-    id = "U001"
-    fullName = "John Doe"
-    email = "johndoe@example.com"
-    phone = "+123456789"
+@startuml RealestateObjectDiagram
+object User {
+    id = "U123"
+    fullName = "Shankar Kharel"
+    email = "shankar@example.com"
+    phone = "1234567890"
+    password = "hashed_password"
     profileImage = "profile.jpg"
-    secondaryPhone = "+987654321"
-    gender = MALE
-    dateOfBirth = 1990-01-01
-    website = "www.johndoe.com"
-    occupation = "Software Engineer"
+    secondaryPhone = "0987654321"
+    gender = Gender.MALE
+    dateOfBirth = "1990-01-01"
+    addressInformation = AddressInformation
+    website = "https://shankarkharel.com.np"
+    occupation = "Engineer"
+    preferences = AppPreferences
 }
 
-' Sample AddressInformation Object for the User
-object address1 {
+object AddressInformation {
     currentAddress = "123 Main St"
-    city = "New York"
-    province = "NY"
-    postalCode = "10001"
+    city = "SampleCity"
+    province = "ProvinceX"
+    postalCode = "12345"
 }
 
-' Sample AppPreferences Object for the User
-object preferences1 {
-    purposeOfApp = HOUSE
-    numberOfPeopleLiving = 4
+object AppPreferences {
+    purposeOfApp = AppPurpose.HOUSE
+    numberOfPeopleLiving = 3
 }
 
-' Sample Property Object
-object property1 {
+object Property {
     id = "P001"
-    address = "456 Park Ave"
-    latitude = "40.7128 N"
-    longitude = "74.0060 W"
-    price = 350000.00
+    address = "456 Elm St"
+    latitude = "40.7128"
+    longitude = "-74.0060"
+    price = 500000.00
     isFav = false
     creatorPrivacy = "full"
-    purpose = SELL
-    status = "Available"
+    purpose = PropertyPurpose.RENT
+    status = "active"
     publishStatus = true
+    features = PropertyFeatures
 }
 
-' Sample PropertyFeatures Object for the Property
-object features1 {
-    environment = "Garden"
+object PropertyFeatures {
+    environment = Environment.GARDEN
     petPolicy = true
     floorLevel = 2
     numberOfRooms = 3
     numberOfKitchens = 1
     numberOfBathrooms = 2
+    facingDirection = "South"
     numberOfHalls = 1
-    availabilityStatus = AVAILABLE
-    propertyType = HOME
+    roadWidth = 10.0
+    condition = "new"
+    propertyAge = PropertyAge.NEW
+    availabilityStatus = AvailabilityStatus.AVAILABLE
+    nearbyFacilities = ["PARK", "GYM"]
+    propertyType = PropertyType.APARTMENT
     isNegotiable = true
-    parkingAvailability = TWO_CARS
+    parkingAvailability = ParkingAvailability.ONE_CAR
+    amenities = ["BALCONY", "PARKING"]
     listingDuration = 30
 }
 
-' Sample ChatChannel Object
-object chatChannel1 {
+object ChatChannel {
     id = "C001"
     propertyId = "P001"
-    sellerId = "U001"
-    buyerId = "U002"
+    sellerId = "U123"
+    buyerId = "U456"
 }
 
-' Sample Message Objects in ChatChannel
-object message1 {
+object Message {
     id = "M001"
-    senderId = "U001"
+    senderId = "U123"
     channelId = "C001"
-    content = "Hello, is the property still available?"
-    timestamp = 2024-11-10 10:00:00
+    content = "Is this property still available?"
+    timestamp = "2024-11-11 10:00"
 }
 
-object message2 {
-    id = "M002"
-    senderId = "U002"
-    channelId = "C001"
-    content = "Yes, it is! Feel free to ask any questions."
-    timestamp = 2024-11-10 10:05:00
+object Notification {
+    title = "New Message"
+    body = "You have a new message in your chat"
+    notifiedAt = "2024-11-11 10:05"
 }
 
-' Relationships
-user1 --> address1 : "has Address"
-user1 --> preferences1 : "has Preferences"
-user1 --> property1 : "owns Property"
-property1 --> features1 : "has Features"
-user1 --> chatChannel1 : "participates in Chat"
-chatChannel1 --> message1 : "contains Message"
-chatChannel1 --> message2 : "contains Message"
+object NotificationSettings {
+    status = "ON"
+}
+
+object LocationSettings {
+    currentAddress = "123 Main St"
+}
+
+object LanguageSettings {
+    defaultLanguage = "English"
+}
+
+object PropertyDatabase {
+    propertyList = ["P001"]
+}
+
+object UserDatabase {
+    userList = ["U123"]
+}
+
+object MessagingDatabase {
+    messageList = ["M001"]
+}
+
+object ChatChannelDatabase {
+    channelList = ["C001"]
+}
+
+' Relationships for objects
+User -> AddressInformation
+User -> AppPreferences
+User -> NotificationSettings
+User -> LocationSettings
+User -> LanguageSettings
+Property -> PropertyFeatures
+User -> PropertyDatabase
+User -> ChatChannelDatabase
+User -> MessagingDatabase
+PropertyDatabase -> Property
+MessagingDatabase -> Message
+Message -> ChatChannel
+ChatChannel -> Property
+ChatChannelDatabase -> ChatChannel
 
 @enduml
